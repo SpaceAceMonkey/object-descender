@@ -27,7 +27,7 @@
  * // Load a .yaml file, rather than providing an object
  * const od = new Od('my_file.yaml');
  * 
- * @namespace object_descender
+ * @alias object_descender
  * @constructor
  * @param {string|object} object_or_filename 
  */
@@ -36,7 +36,6 @@ module.exports = function object_descender(object_or_filename) {
      * @type {object}
      * @description Holds the object which we will search for keys
      *  using the get() method.
-     * @memberof object_descender
      */
     this.data_object = {};
 
@@ -64,15 +63,14 @@ module.exports = function object_descender(object_or_filename) {
      * the value specified by default_value, or an instance of Error
      * if no default value is specified.
      * 
-     * @param {string} key A string consisting of a dot-separated path to
-     *  the desired value.
      * @example
      * const od = new(require('object_descender'));
      * od.get('first_key.second_key.third_key.desired_key');
      * 
+     * @param {string} key A string consisting of a dot-separated path to
+     *  the desired value.
      * @param {*} default_value The value to return if the specified
      *  key is not found.
-     * @memberof object_descender
      */
     this.get = function (key, default_value) {
         let key_value = (
