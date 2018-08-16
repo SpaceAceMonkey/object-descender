@@ -1,6 +1,6 @@
 {
   "name": "object-descender",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Simple solution for retrieving values from deep within an object",
   "main": "object-descender.js",
   "dependencies": {
@@ -11,7 +11,7 @@
     "jsdoc": "^3.5.5"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "doc": "node node_modules/jsdoc/jsdoc.js -d /var/www/html/jsdoc/object_descender/ object-descender.js"
   },
   "author": "",
   "license": "ISC"

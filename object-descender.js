@@ -21,11 +21,34 @@
  * od.get('b.child.key'); // "B2's child's key's value"
  * // Attempt to retrieve a non-existent key without specifying a
  * // default return value
- * od.get('no_such_key'); // Throws Error()
+ * od.get('no_such_key'); // Returns an Error() object
  * 
  * @example
  * // Load a .yaml file, rather than providing an object
+ * const Od = require('object-descender');
  * const od = new Od('my_file.yaml');
+ * 
+ * @example
+ * // Throw an exception on a missing key, regardless of whether
+ * // or not a default value was supplied.
+ * const Od = require('object-descender');
+ * const od = new Od({});
+ * od.throw("Could not find key 'my_key.my_other_key'").get('my_key.my_other_key', 'my_value');
+ * 
+ * @example
+ * // Throw an exception with a custom message when requested key
+ * // is not found. Not that we are assigning the result of get()
+ * // to the variable 'result.' Without throw() being invoked,
+ * // we would simply wind up with result containing an Error()
+ * // object. Throw() causes an actual exception to be raised,
+ * // and assigning the result to a variable will not stop that
+ * // exception from interrupting program flow. That is the
+ * // purpose of throw(). If you use throw(), you will need to
+ * // use try/catch blocks to process the exceptions if you do
+ * // not want them to crash your program.
+ * const Od = require('object-descender');
+ * const od = new Od({});
+ * var result = od.throw("'%key%' not found in supplied object.").get('desired_key');
  * 
  * @alias object_descender
  * @constructor
@@ -59,12 +82,42 @@ module.exports = function object_descender(object_or_filename) {
     }
 
     /**
+     * When set, an exception will be thrown when get() fails
+     * to find the desired key.
+     * 
+     * @type {bool}
+     */
+    this.throw_on_failure = false;
+
+    /**
+     * Holds the message set by throw().
+     * 
+     * @type {string}
+     */
+    this.throw_on_failure_message = null;
+
+    /**
+     * Turns on the throw_on_failure flag. This flag is disabled in
+     * the get() function, and is therefore good for only one call
+     * to get().
+     * 
+     * @param {string} message Message for thrown Error. %key% in message
+     *  will be replaced with the key get() failed to locate.
+     */
+    this.throw = function(message) {
+        this.throw_on_failure = true;
+        this.throw_on_failure_message = message ? message : "Unable to locate key '%key%'";
+
+        return this;
+    };
+
+    /**
      * Returns the value of the given key, if found. Otherwise, returns
      * the value specified by default_value, or an instance of Error
      * if no default value is specified.
      * 
      * @example
-     * const od = new(require('object_descender'));
+     * const od = new(require('object_descender'))();
      * od.get('first_key.second_key.third_key.desired_key');
      * 
      * @param {string} key A string consisting of a dot-separated path to
@@ -95,7 +148,17 @@ module.exports = function object_descender(object_or_filename) {
             if (path.length === 0 && found === true) {
                 key_value = config_position;
             }
+            else if (this.throw_on_failure === true) {
+                const message_to_throw =
+                    this.throw_on_failure_message.toString().replace('%key%', key);
+                this.throw_on_failure = false;
+                this.throw_on_failure_message = null;
+                throw new Error(message_to_throw);
+            }
         }
+
+        this.throw_on_failure = false;
+        this.throw_on_failure_message = null;
 
         return key_value;
     };
