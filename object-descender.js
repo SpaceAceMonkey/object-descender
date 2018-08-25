@@ -138,7 +138,7 @@ module.exports = function object_descender(object_or_filename) {
             let found;
             while ((path_piece = path.shift(path))) {
                 found = false;
-                if (!config_position.hasOwnProperty(path_piece)) {
+                if (config_position == null || !config_position.hasOwnProperty(path_piece)) {
                     break;
                 }
 
