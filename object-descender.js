@@ -162,4 +162,15 @@ module.exports = function object_descender(object_or_filename) {
 
         return key_value;
     };
+
+    /**
+     * Set the data for this instance of object-descender
+     * 
+     * @param {*} data 
+     */
+    this.data = function(data) {
+        this.data_object = data;
+
+        return this;
+    }
 };
