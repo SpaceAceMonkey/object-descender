@@ -1,6 +1,6 @@
 {
   "name": "object-descender",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "Simple solution for retrieving values from deep within an object",
   "main": "object-descender.js",
   "homepage": "https://github.com/SpaceAceMonkey/object-descender",
